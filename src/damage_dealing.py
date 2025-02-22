@@ -10,7 +10,7 @@ DamageType = Enum("Damage Type", [
 ])
 
 class DamageDealer:
-    def __init__(self, name, damage_type reach=None, range=None):
+    def __init__(self, name, damage, damage_type reach=None, range=None):
         self.__name = name
         # Range in feets, implies a ranged attack. None if can't make ranged attacks.
         # self.__range = range
@@ -18,4 +18,4 @@ class DamageDealer:
         # self.__reach = reach
         self.__attack
         self.__damage_type
-        self.__damage =
+        self.__damage = damage
