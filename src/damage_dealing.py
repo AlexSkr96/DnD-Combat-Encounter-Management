@@ -17,5 +17,5 @@ class DamageDealer:
         # Reach in feets, implies a meele attack. None if can't make meele attacks.
         # self.__reach = reach
         self.__attack
-        self.__damage_type
+        self.__damage_type = damage_type
         self.__damage = damage
