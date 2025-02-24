@@ -1,4 +1,4 @@
 from enum import Enum
 
 
-AbilityType = Enum("Ability", ["str", "int", "dex", "wis", "con", "cha"])
+AbilityType = Enum("Ability", ["STR", "INT", "DEX", "WIS", "CON", "CHA"])
