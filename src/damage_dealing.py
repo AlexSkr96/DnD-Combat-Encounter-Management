@@ -1,6 +1,6 @@
 from enum import Enum
 
-from service import AbilityType
+from service import Ability
 from die import *
 from character import Character
 
@@ -21,7 +21,7 @@ class Damage:
 
 
 class Attack:
-    def __init__(self, ability: AbilityType):
+    def __init__(self, ability: Ability):
         self.__ability = ability
         self.__damages = []
 
