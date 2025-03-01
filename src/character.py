@@ -1,4 +1,4 @@
-from service import Ability
+from service import Ability, Skill, Skill_to_ability
 from die import Die
 
 
@@ -6,21 +6,20 @@ class Character:
     def __init__(
         self,
         name: str,
-        hp: int,
-        ac: int,
         speed: int,
         strength: int,
         intelligence: int,
         dexterity: int,
-        wisdow: int,
+        wisdom: int,
         constitution: int,
         charisma: int,
+        hp: int,
     ):
-        self.__name = None
+        self.__name = name
 
-        self.__max_hp = None
-        self.hp = None
-        self.temp_hp = None
+        self.__max_hp = hp
+        self.hp = hp
+        self.temp_hp = 0
         self.__ac = None
         self.__speed = None
         self.__initiative = None
@@ -33,11 +32,16 @@ class Character:
             "gear": []
         }
 
-        self.__abilities = {}
-        for ability in Ability:
-            self.__abilities[ability] = None
+        self.__abilities = {
+            Ability.STR: strength,
+            Ability.DEX: dexterity,
+            Ability.CON: constitution,
+            Ability.INT: intelligence,
+            Ability.WIS: wisdom,
+            Ability.CHA: charisma
+        }
 
-        self.__skills = {}
+        # self.__skills = {}
 
         self.__gear = [] # List of ?weapon? class objects
         self.__spells = [] # List of spell class objects
