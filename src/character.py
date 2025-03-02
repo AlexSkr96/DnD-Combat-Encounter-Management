@@ -1,25 +1,31 @@
 from service import Ability, Skill, Skill_to_ability
-from die import Die
+from die import *
 
 
 class Character:
     def __init__(
         self,
         name: str,
-        speed: int,
-        strength: int,
-        intelligence: int,
-        dexterity: int,
-        wisdom: int,
-        constitution: int,
-        charisma: int,
-        hp: int,
+        hp: int | Die,
+        strength: int = -1,
+        intelligence: int = -1,
+        dexterity: int = -1,
+        wisdom: int = -1,
+        constitution: int = -1,
+        charisma: int = -1,
+        # lvl: int = 1,
+        speed: int = 30,
     ):
         self.__name = name
 
-        self.__max_hp = hp
-        self.hp = hp
+        if isinstance(hp, Die):
+            self.__max_hp = hp.roll()
+        else:
+            self.__max_hp = hp
+
+        self.hp = self.__max_hp
         self.temp_hp = 0
+
         self.__ac = None
         self.__speed = None
         self.__initiative = None
@@ -33,12 +39,12 @@ class Character:
         }
 
         self.__abilities = {
-            Ability.STR: strength,
-            Ability.DEX: dexterity,
-            Ability.CON: constitution,
-            Ability.INT: intelligence,
-            Ability.WIS: wisdom,
-            Ability.CHA: charisma
+            Ability.STR: strength if strength > -1 else roll_ability(),
+            Ability.DEX: dexterity if dexterity > -1 else roll_ability(),
+            Ability.CON: constitution if constitution > -1 else roll_ability(),
+            Ability.INT: intelligence if intelligence > -1 else roll_ability(),
+            Ability.WIS: wisdom if wisdom > -1 else roll_ability(),
+            Ability.CHA: charisma if charisma > -1 else roll_ability()
         }
 
         # self.__skills = {}
@@ -49,4 +55,24 @@ class Character:
         self.__multiattack = 1 # Number of attacks per main action
 
 
-    def attack(self, target: Character):
+    def __repr__(self):
+        repr = f"=== {self.__name} ===\n"
+        for ability in self.__abilities:
+            ability_value = self.__abilities[ability]
+            ability_modifier = self.get_ability_mod(ability)
+            repr += f"{str(ability)[-3:]}: {ability_modifier} ({ability_value}) | "
+
+        return repr
+
+
+    def get_ability_mod(self, ability: Ability):
+        return (self.__abilities[ability] - 10) // 2
+
+
+    def get_skill_mod(self, skill: Skill):
+        ability = Skill_to_ability[skill]
+        return self.get_ability_mod(ability)
+
+
+
+    # def attack(self, target: Character):

@@ -1,12 +1,22 @@
 from die import *
-from service import Ability
+from service import *
+from character import Character
 
 
-print(d20.roll())
+dolgrim = Character(
+    "dolgrim",
+    strength=15,
+    intelligence=8,
+    dexterity=14,
+    wisdom=10,
+    constitution=12,
+    charisma=8,
+    hp=d6.get_die_roll(3, 3)
+)
 
-d6x2 = d6.get_die_roll(2)
-print(d6x2.roll())
-
-
-for i in Ability:
-    print(i)
+jamy = Character(
+    "Jamy",
+    hp = 25
+)
+print(jamy)
+print(jamy.get_skill_mod(Skill.Arcana))

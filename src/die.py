@@ -22,6 +22,14 @@ d10 = Die(10)
 d12 = Die(12)
 d20 = Die(20)
 
+def roll_ability():
+    rolls = []
+    for _ in range(4):
+        rolls.append(d6.roll())
+
+    rolls.remove(min(rolls))
+    return sum(rolls)
+
 
 class DieRoll(Die):
     def __init__(self, sides, number_of_dice = 1, modifier = 0):
