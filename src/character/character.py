@@ -1,12 +1,69 @@
+from enum import Enum
+
 from service import Ability, Skill, Skill_to_ability
 from die import *
 
 
+class Type(Enum):
+    Aberration = 1
+    Beast = 2
+    Celestial = 3
+    Construct = 4
+    Dragon = 5
+    Elemental = 6
+    Fey = 7
+    Fiend = 8
+    Giant = 9
+    Humanoid = 10
+    Monstrosity = 11
+    Ooze = 12
+    Plant = 13
+    Undead = 14
+
+class Size(Enum):
+    Tiny = 1
+    Small = 2
+    Medium = 3
+    Large = 4
+    Huge = 5
+    Gargantuan = 6
+
+# Alignment by lawfulness
+class LAlignment(Enum):
+    Lawful = 1
+    Neutral = 2
+    Chaotic = 3
+
+# Alignment by goodness
+class GAlignment(Enum):
+    Good = 1
+    Neutral = 2
+    Evil = 3
+
+
 class Character:
+    def get_ability_mod(self, ability: Ability):
+        return (self.__abilities[ability] - 10) // 2
+
+
+    def get_skill_mod(self, skill: Skill):
+        ability = Skill_to_ability[skill]
+        return self.get_ability_mod(ability)
+
+
+    def get_ac(self):
+        #TODO: implement armour
+        return 10 + self.get_ability_mod(Ability.DEX)
+
+
     def __init__(
         self,
         name: str,
         hp: int | Die,
+        type: Type,
+        size: Size,
+        lawfulness: LAlignment | None = None,
+        goodness: GAlignment | None = None,
         strength: int = -1,
         intelligence: int = -1,
         dexterity: int = -1,
@@ -15,6 +72,7 @@ class Character:
         charisma: int = -1,
         # lvl: int = 1,
         speed: int = 30,
+        natural_armour: int = 10,
     ):
         self.__name = name
 
@@ -23,13 +81,14 @@ class Character:
         else:
             self.__max_hp = hp
 
-        self.hp = self.__max_hp
-        self.temp_hp = 0
+        self.__hp = self.__max_hp
+        self.__temp_hp = 0
 
-        self.__ac = None
-        self.__speed = None
+        self.__speed = speed
         self.__initiative = None
-
+        self.__size = size
+        self.__lawfulness = lawfulness
+        self.__goodness = goodness
         self.__inspiration = False
         self.__proficiency_bonus = None
         self.__proficiencies = {
@@ -47,6 +106,7 @@ class Character:
             Ability.CHA: charisma if charisma > -1 else roll_ability()
         }
 
+        self.__ac = natural_armour + self.get_ability_mod(Ability.DEX)
         # self.__skills = {}
 
         self.__gear = [] # List of ?weapon? class objects
@@ -57,22 +117,17 @@ class Character:
 
     def __repr__(self):
         repr = f"=== {self.__name} ===\n"
+        repr += f"♥️ {self.__hp}/{self.__max_hp}"
+        if self.__temp_hp != 0:
+            repr += f"+{self.__temp_hp}"
+        repr += f" ♥️\n⛨ {self.__ac} ⛨\n"
+
         for ability in self.__abilities:
             ability_value = self.__abilities[ability]
             ability_modifier = self.get_ability_mod(ability)
             repr += f"{str(ability)[-3:]}: {ability_modifier} ({ability_value}) | "
 
         return repr
-
-
-    def get_ability_mod(self, ability: Ability):
-        return (self.__abilities[ability] - 10) // 2
-
-
-    def get_skill_mod(self, skill: Skill):
-        ability = Skill_to_ability[skill]
-        return self.get_ability_mod(ability)
-
 
 
     # def attack(self, target: Character):

@@ -1,0 +1,2 @@
+class Holdable:
+    pass

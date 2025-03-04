@@ -1,6 +1,6 @@
 from die import *
 from service import *
-from character import Character
+from character.character import Character, Size, Type
 
 
 dolgrim = Character(
@@ -11,12 +11,17 @@ dolgrim = Character(
     wisdom=10,
     constitution=12,
     charisma=8,
-    hp=d6.get_die_roll(3, 3)
+    hp=d6.get_die_roll(3, 3),
+    size=Size.Small,
+    type=Type.Aberration,
+    natural_armour=11
 )
+print(dolgrim)
 
 jamy = Character(
     "Jamy",
-    hp = 25
+    hp=25,
+    size=Size.Medium,
+    type=Type.Humanoid
 )
 print(jamy)
-print(jamy.get_skill_mod(Skill.Arcana))
