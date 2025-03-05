@@ -2,7 +2,7 @@ from enum import Enum
 
 from service import Ability
 from die import *
-from character import Character
+from character.character import Character
 
 
 DamageType = Enum("Damage Type", [
