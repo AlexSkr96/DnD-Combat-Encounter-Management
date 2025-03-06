@@ -41,4 +41,4 @@ class Weapon:
 
 
 
-class Spell:
+# class Spell:
