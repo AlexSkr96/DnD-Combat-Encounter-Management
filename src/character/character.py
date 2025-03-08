@@ -1,5 +1,9 @@
 from enum import Enum
 
+from errors import GearSlotOccupiedException, InsuficcientAPException
+from gear.holdable.shield import Shield
+from gear.wearable.wearable import Wearable
+from holdable.holdable import Holdable
 from service import Ability, Skill, Skill_to_ability
 from die import *
 
@@ -113,6 +117,14 @@ class Character:
         self.__spells = [] # List of spell class objects
         self.__traits = [] # List of trait class objects
         self.__multiattack = 1 # Number of attacks per main action
+        self.__action = 1
+        self.__bonus_action = 1
+        self.__reaction = 1
+
+        self.__hand = None # What characters holds in primary hand
+        self.__off_hand = None # What character holds in secondary hand
+
+        self.__combat_mode = False # Character needs to use actions while in combat mode
 
 
     def __repr__(self):
@@ -130,4 +142,49 @@ class Character:
         return repr
 
 
-    # def attack(self, target: Character):
+    def use_action(self):
+        if self.__action < 1:
+            raise InsuficcientAPException()
+        else:
+            self.__action -= 1
+
+
+    def use_bonus_action(self):
+        if self.__bonus_action < 1:
+            raise InsuficcientAPException()
+        else:
+            self.__bonus_action -= 1
+
+
+    def use_reaction(self):
+        if self.__bonus_action < 1:
+            raise InsuficcientAPException()
+        else:
+            self.__bonus_action -= 1
+
+
+    def equip_holdable(self, gear: Holdable, how = "Auto"):
+        if how == "Auto":
+            if not self.__hand and not isinstance(gear, Shield):
+                self.__hand = Holdable
+            elif not self.__off_hand:
+                self.__off_hand = Holdable
+        elif how == "Primary":
+            if not self.__hand:
+                self.__hand = gear
+        elif how == "Secondary":
+            if not self.__off_hand:
+                self.__off_hand = gear
+        elif how == "Two-handed":
+            if not (self.__hand or self.__off_hand):
+                self.__hand = gear
+                self.__off_hand = self.__off_hand
+
+        raise GearSlotOccupiedException()
+
+
+
+    # def dequip(self):
+
+
+    def attack(self, target: Character):

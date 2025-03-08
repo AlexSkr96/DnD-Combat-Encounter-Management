@@ -11,6 +11,7 @@ DamageType = Enum("Damage Type", [
     "Poison", "Slashing",
 ])
 
+
 class Damage:
     def __init__(self, damage_dice: DieRoll, damage_type: DamageType):
         self.__damage_type = damage_type
@@ -28,17 +29,15 @@ class Attack:
     def add_damage(self, damage: Damage):
         self.__damages.append(damage)
 
-    # def attack(self, target: Character):
+    def target(self, target: Character):
 
 
 
 class Weapon:
-    def __init__(self, name: str, w_range = 0, reach = 0):
-    # Range in feets, implies a ranged attack. None if can't make ranged attacks.
-    # self.__range = w_range
-    # Reach in feets, implies a meele attack. None if can't make meele attacks.
-    # self.__reach = reach
+    def __init__(self, name: str, w_range=0, reach=0):
+        # Range in feets, implies a ranged attack. None if can't make ranged attacks.
+        # self.__range = w_range
+        # Reach in feets, implies a meele attack. None if can't make meele attacks.
+        # self.__reach = reach
 
-
-
-# class Spell:
+        # class Spell:
