@@ -1,9 +1,10 @@
+
 from enum import Enum
 
 from errors import GearSlotOccupiedException, InsuficcientAPException
 from gear.holdable.shield import Shield
 from gear.wearable.wearable import Wearable
-from holdable.holdable import Holdable
+from gear.holdable.holdable import Holdable
 from service import Ability, Skill, Skill_to_ability
 from die import *
 
