@@ -34,7 +34,7 @@ class Attack:
 
 
 class Weapon:
-    def __init__(self, name: str, w_range=0, reach=0):
+    def __init__(self, ):
         # Range in feets, implies a ranged attack. None if can't make ranged attacks.
         # self.__range = w_range
         # Reach in feets, implies a meele attack. None if can't make meele attacks.
