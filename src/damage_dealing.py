@@ -30,7 +30,7 @@ class Attack:
         self.__damages.append(damage)
 
     def add_damages(self, damage: Damage):
-        for damage in damages:
+        for damage in self.__damages:
             self.__damages.append(damage)
 
     def target(self, target: Character):

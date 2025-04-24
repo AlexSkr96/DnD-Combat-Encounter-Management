@@ -1,5 +1,6 @@
 from gear.holdable.holdable import Holdable
 from damage_dealing import Attack
+from service import Ability
 
 
 class Weapon(Holdable, Attack):
