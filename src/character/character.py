@@ -1,10 +1,10 @@
-
 from enum import Enum
 
 from errors import GearSlotOccupiedException, InsuficcientAPException
 from gear.holdable.shield import Shield
 from gear.wearable.wearable import Wearable
 from gear.holdable.holdable import Holdable
+from gear.holdable.weapon import Weapon
 from service import Ability, Skill, Skill_to_ability
 from die import *
 
@@ -44,6 +44,12 @@ class GAlignment(Enum):
     Good = 1
     Neutral = 2
     Evil = 3
+
+
+class State(Enum):
+    Alive = 1
+    Dead = 2
+    Incapacitated = 3
 
 
 class Character:
@@ -122,10 +128,12 @@ class Character:
         self.__bonus_action = 1
         self.__reaction = 1
 
-        self.__hand = None # What characters holds in primary hand
+        self.__hand = Weapon.fist # What characters holds in primary hand
         self.__off_hand = None # What character holds in secondary hand
 
         self.__combat_mode = False # Character needs to use actions while in combat mode
+
+        self.__state = State.Alive
 
 
     def __repr__(self):
@@ -142,26 +150,76 @@ class Character:
 
         return repr
 
+    def get_damaged(self, damage):
+        self.__hp -= damage
+        if self.__hp < -10:
+            self.die()
+        elif self.__hp <= 0:
+            self.get_incapacitated()
 
-    def use_action(self):
-        if self.__action < 1:
-            raise InsuficcientAPException()
+
+    def equip_weapon(self, weapon: Weapon):
+        weapon.set_ability_val(self.__abilities[weapon.get_ability()])
+
+
+    def roll_initiative(self):
+        return d20.roll() + self.get_ability_mod(Ability.DEX)
+
+
+    # Decorator function to be used for actions that require an action point
+    def use_action(self, action):
+        def wrapper(*args, **kwargs):
+            if self.__action < 1:
+                raise InsuficcientAPException()
+            else:
+                self.__action -= 1
+                return action(*args, **kwargs)
+
+        return wrapper
+
+
+    # def use_bonus_action(self, action):
+    #     if self.__bonus_action < 1:
+    #         raise InsuficcientAPException()
+    #     else:
+    #         self.__bonus_action -= 1
+
+
+    # def use_reaction(self):
+    #     if self.__reaction < 1:
+    #         raise InsuficcientAPException()
+    #     else:
+    #         self.__reaction -= 1
+
+
+    def die(self):
+        self.__state = State.Dead
+
+
+    def get_incapacitated(self):
+        self.__state = State.Incapacitated
+        self.__fails = 0
+        self.__successes = 0
+
+
+    def roll_death_save(self):
+        if self.__state != State.Incapacitated:
+            raise Exception("Character is not incapacitated")
+
+        roll = d20.roll()
+        mod = 2 if roll in [1, 20] else 1
+        if roll > 10:
+            self.__successes += mod
         else:
-            self.__action -= 1
+            self.__fails += mod
 
-
-    def use_bonus_action(self):
-        if self.__bonus_action < 1:
-            raise InsuficcientAPException()
+        if self.__fails >= 3:
+            self.die()
         else:
-            self.__bonus_action -= 1
-
-
-    def use_reaction(self):
-        if self.__bonus_action < 1:
-            raise InsuficcientAPException()
-        else:
-            self.__bonus_action -= 1
+            self.__fails = None
+            self.__successes = None
+            self.__hp = 1
+            self.__state = State.Alive
 
 
     def equip_holdable(self, gear: Holdable, how = "Auto"):
@@ -185,7 +243,20 @@ class Character:
 
 
 
-    # def dequip(self):
+    # def unequip_holdable(self):
 
-
+    @Character.use_action
     def attack(self, target: Character):
+        self.__hand.attack(target)
+
+
+    def start_turn(self, enemies: list[Character], allies: list[Character] = []):
+        # movement = self.__speed
+        self.__action = 1
+        self.__bonus_action = 1
+        self.__reaction = 1
+
+        # print(f"What would you like to do, {self.__name}?")
+        print(f"Who would you like to attack, {self.__name}?")
+        for i in range(1, len(enemies)+1):
+            print(f"{i}. {enemies[i].get_name} {enemies[i].het_pretty_health}")
